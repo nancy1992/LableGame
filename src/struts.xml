@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+    "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- 引入spring -->
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="debug" value="true"></constant>
+	<!-- 允许静态访问 -->
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true" />
+	<!-- 主题模式 -->
+	<constant name="struts.ui.theme" value="simple" />
+	<!-- 允许最大的上传文件大小,1G -->
+	<constant name="struts.multipart.maxSize" value="1048576000" />
+
+	<package name="LableGame" namespace="/" extends="struts-default">
+
+		<!-- 获得所有的用户标签 -->
+		<action name="getAllUserLable" class="cn.lst.action.GetAllUserLableAction">
+			<result name="success">index.jsp</result>
+		</action>
+		<!-- 获得标签库标签 -->
+		<action name="getAllLable" class="cn.lst.action.GetLableAction">
+			<result name="success">add_lable.jsp</result>
+		</action>
+		<!-- 添加标签库标签 -->
+		<action name="addLable" class="cn.lst.action.AddLableAction">
+			<result name="success" type="chain">getAllLable</result>
+		</action>
+		<!-- 添加标签前的检查 -->
+		<action name="checkLable" class="cn.lst.action.JudgeLableNameAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+			<result name="exists" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+		<!-- 添加用户标签 -->
+		<action name="addUserLable" class="cn.lst.action.AddUserLableAction">
+			<result name="success" type="chain">getAllUserLable</result>
+		</action>
+		<!-- 删除标签 -->
+		<action name="deleteLable" class="cn.lst.action.DeleteLableAction">
+			<result name="success" type="chain">getAllLable</result>
+		</action>
+	</package>
+</struts>

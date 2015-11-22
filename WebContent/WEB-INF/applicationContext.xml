@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+
+		<property name="url">
+			<value>jdbc:mysql://114.215.172.250:3306/LableGame</value>
+		</property>
+
+		<property name="username">
+			<value>root</value>
+		</property>
+
+		<property name="password">
+			<value>kangjie2014</value>
+		</property>
+
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+
+		<property name="mappingResources">
+			<list>
+				<value>cn/lst/entity/Lable.hbm.xml</value>
+				<value>cn/lst/entity/UserLable.hbm.xml</value>
+			</list>
+		</property>
+
+
+		<property name="hibernateProperties">
+
+			<props>
+
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<prop key="hibernate.show_sql">false</prop>
+
+			</props>
+
+		</property>
+
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!--在Spring容器中注册Bean -->
+	<!-- 标签库数据逻辑层 -->
+	<bean id="lableDao" class="cn.lst.dao.LableDaoImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	<!-- 标签库业务逻辑层 -->
+	<bean id="lableService" class="cn.lst.service.LableServiceImpl">
+		<!--设值注入 -->
+		<property name="lableDao" ref="lableDao" />
+	</bean>
+	<!-- 用户标签库数据逻辑层 -->
+	<bean id="userLableDao" class="cn.lst.dao.UserLableDaoImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	<!-- 用户标签库业务逻辑层 -->
+	<bean id="userLableService" class="cn.lst.service.UserLableServiceImpl">
+		<!--设值注入 -->
+		<property name="userLableDao" ref="userLableDao" />
+	</bean>
+	<!-- 获得所有的用户标签 -->
+	<bean class="cn.lst.action.GetAllUserLableAction">
+		<property name="userLableService" ref="userLableService" />
+	</bean>
+	<!-- 获得标签库的标签 -->
+	<bean class="cn.lst.action.GetLableAction">
+		<property name="lableService" ref="lableService" />
+	</bean>
+	<!-- 添加标签库的标签 -->
+	<bean class="cn.lst.action.AddLableAction">
+		<property name="lableService" ref="lableService" />
+	</bean>
+	<!-- 添加用户标签库 -->
+	<bean class="cn.lst.action.AddUserLableAction">
+		<property name="userLableService" ref="userLableService" />
+	</bean>
+	<!-- 删除标签库 -->
+	<bean class="cn.lst.action.DeleteLableAction">
+		<property name="userLableService" ref="userLableService" />
+		<property name="lableService" ref="lableService" />
+	</bean>
+</beans>
